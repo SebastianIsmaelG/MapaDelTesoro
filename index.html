@@ -1,0 +1,132 @@
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <title>El tesoro escondido!</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  </head>
+
+  <body style="background-color: #804914">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center text-white p-3"><h3 id="titulo">En busqueda del tesoro escondido!</h3></div>
+        </div>
+        <div class="row">
+          <div class="col-lg-8 col-md-12 col-xs-12 text-center">
+          <img id="mapa" class="img-fluid" src="http://nostarch.com/images/treasuremap.png">
+        </div>
+        <div class="col-lg-4 col-md-12 col-xs-12">
+          <div class="container">
+            <br>
+            <div class="border rounded border-success bg-white p-3">
+            <div class="p-1 text-center">
+              <h4 id="distancia">Toca el mapa para comenzar</h4>
+            </div>
+            <div class="p-3 text-center">
+              <p>Tesoros encontrados : <span id="treasurescore" ></span> </p>
+              <p>Mejor Puntuación : <span id="score" ></span></p>
+            </div>
+          </div>
+          </div>
+        </div>
+        </div>
+      </div>
+
+
+      <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+
+    <script>
+      //Variables
+      let ancho = 400;
+      let alto = 400;
+      let clicks = 0;
+      let score = 0;
+      let treasure= 0;
+      //muestra cuantos tesoros lleva
+      let ayuda = document.getElementById("treasurescore").innerHTML= treasure;
+
+      //numero al azar
+      let numeroAzar = function(valor){
+        return Math.floor(Math.random()*valor);
+      };
+      //crea la ubicacion del tesoro 
+       let tesoro = {
+        x: numeroAzar(ancho),
+        y: numeroAzar(alto)
+      };
+
+
+      //distancia entre el click y el tesoro
+
+      let traedistancia = function(event, tesoro){
+        var diffX = event.offsetX - tesoro.x;
+        var diffY = event.offsetY - tesoro.y;
+        return Math.sqrt((diffX*diffX)+(diffY*diffY));
+      };
+
+
+      //genera el mensaje representado que tan cerca esta del tesoro
+
+      let traeAyuda = function(distancia){
+        if (distancia<15) {
+          return "Quemando!"
+        }else if (distancia<20){
+          return "Muy Caliente!";
+        }else if (distancia<40){
+          return "Caliente!";
+        }else if (distancia<80){
+          return "Tibio!";
+        }else if (distancia<160){
+          return "Frio";
+        }else {
+          return "Muy Frio!";
+        }
+      };
+
+
+      //Clicks en el mapa
+      $("#mapa").click(function(event){
+        clicks++;
+
+
+        //calcula distancia entre el click y el tesoro
+        let distancia = traedistancia(event, tesoro);
+        //convierte la distancia en ayuda
+        let ayuda = traeAyuda(distancia);
+
+        //actualizar el elemento id #distancia
+        let ayudaa = document.getElementById("distancia").innerHTML= ayuda;
+
+        //$(#distancia).text(ayuda);
+        //Si esta cerca dile que gano y encontro el tesoro!
+        if (distancia<15) {
+          alert("Felicidades, Encontraste el tesoro en "+ clicks + " clicks");
+          let ayuda = document.getElementById("distancia").innerHTML= "Toca el mapa para comenzar";
+          //+1 en tesoros encontrados
+          treasure++;
+          let nuevotreasure = document.getElementById("treasurescore").innerHTML = treasure;
+          //reseteamos la posicion del tesoro
+          numeroAzar();
+          //reescribimos las coordenadas
+           tesoro = {
+            x: numeroAzar(ancho),
+            y: numeroAzar(alto)
+          };
+
+          if (score==0) {
+            let nuevoscore = document.getElementById("score").innerHTML= clicks;
+            score=clicks;
+            clicks=0;
+          }else if(score>clicks){
+            score=clicks;
+            let nuevoscore = document.getElementById("score").innerHTML= clicks;
+            clicks=0;
+          }else{
+            console.log(clicks);
+          }
+
+        }
+      });
+    </script>
+   </body>
+   </html>
